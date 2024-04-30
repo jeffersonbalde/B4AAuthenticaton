@@ -1,15 +1,19 @@
 ﻿Build1=Default,b4a.example
-File1=Layout.bal
+File1=Main.bal
+File2=SignUp.bal
 FileGroup1=Default Group
+FileGroup2=Default Group
 Group=Default Group
 Library1=core
-Library2=xui
-Library3=sql
+Library2=sql
+Library3=xui
+Library4=xui views
 ManifestCode='This code will be applied to the manifest file during compilation.~\n~'You do not need to modify it in most cases.~\n~'See this link for for more information: https://www.b4x.com/forum/showthread.php?p=78136~\n~AddManifestText(~\n~<uses-sdk android:minSdkVersion="21" android:targetSdkVersion="33"/>~\n~<supports-screens android:largeScreens="true" ~\n~    android:normalScreens="true" ~\n~    android:smallScreens="true" ~\n~    android:anyDensity="true"/>)~\n~SetApplicationAttribute(android:icon, "@drawable/icon")~\n~SetApplicationAttribute(android:label, "$LABEL$")~\n~CreateResourceFromFile(Macro, Themes.LightTheme)~\n~'End of default text.~\n~
-Module1=Starter
-NumberOfFiles=1
-NumberOfLibraries=3
-NumberOfModules=1
+Module1=SignUp
+Module2=Starter
+NumberOfFiles=2
+NumberOfLibraries=4
+NumberOfModules=2
 Version=12.8
 @EndOfDesignText@
 #Region  Project Attributes 
@@ -35,35 +39,37 @@ End Sub
 
 Sub Globals
 	'These global variables will be redeclared each time the activity is created.
+	Private Password As B4XFloatTextField
+	Private Email As B4XFloatTextField
 End Sub
 
 Sub Activity_Create(FirstTime As Boolean)
 	If FirstTime Then
-		sql.Initialize(File.DirInternal, "test.db", True)
+		sql.Initialize(File.DirInternal, "crud.db", True)
 	End If
 	
-	Wait For (dropTable) Complete (Success As Boolean)
-	If Success Then
-		
-	End If
+'	Wait For (dropTable) Complete (Success As Boolean)
+'	If Success Then	
+'		
+'	End If
 	
 	Wait For (createTable) Complete (Success As Boolean)
 	If Success Then'
-		Wait For (insertData) Complete (Success As Boolean)
-		If Success Then
-			Dim Cursor As Cursor
-			Cursor = sql.ExecQuery("SELECT * FROM table1")
-			For i = 0 To Cursor.RowCount - 1
-				Cursor.Position = i
-'				Log(Cursor.GetString("col1"))
-				Log($"column1: ${Cursor.GetString("col1")} "$)
-				Log($"column2: ${Cursor.GetString("col2")} "$)
-				Log($"column3: ${Cursor.GetString("col3")} "$)
-			Next
-		End If
+'		Wait For (insertData) Complete (Success As Boolean)
+'		If Success Then
+'			Dim Cursor As Cursor
+'			Cursor = sql.ExecQuery("SELECT * FROM table1")
+'			For i = 0 To Cursor.RowCount - 1
+'				Cursor.Position = i
+''				Log(Cursor.GetString("col1"))
+'				Log($"column1: ${Cursor.GetString("col1")} "$) 
+'				Log($"column2: ${Cursor.GetString("col2")} "$)
+'				Log($"column3: ${Cursor.GetString("col3")} "$)
+'			Next
+'		End If
 	End If
 	
-	Activity.LoadLayout("Layout")
+	Activity.LoadLayout("Main")
 End Sub
 
 Sub Activity_Resume
@@ -79,7 +85,7 @@ Sub Button1_Click
 End Sub
 
 Public Sub createTable As ResumableSub
-	sql.ExecNonQuery("CREATE TABLE IF NOT EXISTS table1 (col1 TEXT, col2 TEXT, col3 TEXT)")
+	sql.ExecNonQuery("CREATE TABLE IF NOT EXISTS accounts (name TEXT, email TEXT, password TEXT)")
 	Return True
 End Sub
 
@@ -89,6 +95,46 @@ Public Sub insertData As ResumableSub
 End Sub
 
 Public Sub dropTable As ResumableSub
-	sql.ExecNonQuery("DROP TABLE table1")
+	sql.ExecNonQuery("DROP TABLE accounts")
 	Return True
+End Sub
+
+Private Sub Register_Click
+	StartActivity(SignUp)
+End Sub
+
+Public Sub Login As ResumableSub
+	Dim result As Boolean
+	
+	Try
+		Dim query As String = $"SELECT email, password FROM accounts WHERE email=? AND password=?"$
+		Dim rs As ResultSet = sql.ExecQuery2(query, Array As String(Email.Text, Password.Text))
+		
+		If rs.NextRow Then
+			Log("Email: " & rs.GetString("email"))
+			Log("Password: " & rs.GetString("password"))
+			result = True
+		Else
+				xui.MsgboxAsync("Invalid username and password", "Invalid")
+				result = False
+		End If
+	Catch
+		Log(LastException)
+		xui.MsgboxAsync(LastException, "Error")
+		result = False
+	End Try
+	
+	Return result
+End Sub
+
+Private Sub LoginButton_Click
+	Try
+		Wait For (Login) Complete (Success As Boolean)
+		If Success Then
+			xui.MsgboxAsync("Login successfully", "Login")
+		End If
+	Catch
+		Log(LastException)
+		xui.MsgboxAsync(LastException, "Error")
+	End Try
 End Sub
