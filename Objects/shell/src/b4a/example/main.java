@@ -57,8 +57,13 @@ public boolean isSingleton() {
 public static RemoteObject __c = RemoteObject.declareNull("anywheresoftware.b4a.keywords.Common");
 public static RemoteObject _xui = RemoteObject.declareNull("anywheresoftware.b4a.objects.B4XViewWrapper.XUI");
 public static RemoteObject _sql = RemoteObject.declareNull("anywheresoftware.b4a.sql.SQL");
+public static RemoteObject _password = RemoteObject.declareNull("b4a.example.b4xfloattextfield");
+public static RemoteObject _email = RemoteObject.declareNull("b4a.example.b4xfloattextfield");
+public static RemoteObject _dateutils = RemoteObject.declareNull("b4a.example.dateutils");
+public static b4a.example.signup _signup = null;
 public static b4a.example.starter _starter = null;
+public static b4a.example.xuiviewsutils _xuiviewsutils = null;
   public Object[] GetGlobals() {
-		return new Object[] {"Activity",main.mostCurrent._activity,"sql",main._sql,"Starter",Debug.moduleToString(b4a.example.starter.class),"xui",main._xui};
+		return new Object[] {"Activity",main.mostCurrent._activity,"DateUtils",main.mostCurrent._dateutils,"Email",main.mostCurrent._email,"Password",main.mostCurrent._password,"SignUp",Debug.moduleToString(b4a.example.signup.class),"sql",main._sql,"Starter",Debug.moduleToString(b4a.example.starter.class),"xui",main._xui,"XUIViewsUtils",Debug.moduleToString(b4a.example.xuiviewsutils.class)};
 }
 }

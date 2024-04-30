@@ -30,6 +30,14 @@
 			</intent-filter>
 			
 		</activity>
+		<activity
+			android:windowSoftInputMode="stateHidden"
+			android:launchMode="singleTop"
+			android:name=".signup"
+			android:label="B4A Example"
+			android:screenOrientation="unspecified"
+			android:exported="true">
+		</activity>
 		<service
 			android:name=".starter"
 			android:exported="true">
